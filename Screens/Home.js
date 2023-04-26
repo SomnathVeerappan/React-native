@@ -22,6 +22,8 @@ import updateUseEffect from "../Components/CustomUseEffect";
 import DummyData from "../assets/DummyData";
 
 const Item = ({ price, image, description }) => {
+	const [valid, setvalid] = useState(false);
+
 	return (
 		<View
 			style={{
@@ -37,11 +39,21 @@ const Item = ({ price, image, description }) => {
 			</View>
 			<View>
 				<Image
-					style={{ height: 100, width: 100, paddingLeft: 10, marginTop: -10 }}
-					source={{
-						uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`,
+					onError={() => setvalid(true)}
+					style={{
+						resizeMode: "contain",
+						height: 100,
+						width: 100,
+						paddingLeft: 10,
+						marginTop: -10,
 					}}
-					// source={images}
+					source={
+						valid
+							? require("../assets/Image_not_available.png")
+							: {
+									uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`,
+							  }
+					}
 				/>
 			</View>
 		</View>
