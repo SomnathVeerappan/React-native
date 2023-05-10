@@ -1,13 +1,15 @@
-import { React, useEffect, useState, useCallback } from "react";
+import { React, useEffect, useState, useContext } from "react";
 import {
 	Image,
 	TextInput,
 	View,
 	Alert,
-	SectionList,
+	FlatList,
+	TouchableOpacity,
+	StatusBar,
+	Touchable,
 	Pressable,
 } from "react-native";
-import Headerbar from "../Components/Header";
 import { Text } from "@rneui/base";
 import { Ionicons } from "react-native-vector-icons";
 import {
@@ -20,81 +22,112 @@ import {
 import { Filter } from "../Components/Filters";
 import updateUseEffect from "../Components/CustomUseEffect";
 import DummyData from "../assets/DummyData";
+import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../Components/AuthContext";
+import { Suggestion } from "../Components/Suggestion";
+import { Headerbar } from "../Components/Header";
 
-const Item = ({ price, image, description }) => {
+const Item = ({ id, name, price, image, description }) => {
 	const [valid, setvalid] = useState(false);
-
+	const Navigator = useNavigation();
+	const [Card, setCard] = useState([]);
+	// console.log(Card);
 	return (
-		<View
+		<Pressable
 			style={{
-				flexDirection: "row",
-				paddingHorizontal: 15,
-				marginBottom: 10,
-			}}>
-			<View style={{ flex: 1, marginRight: 10 }}>
-				<Text style={{ fontSize: 20 }} numberOfLines={2}>
-					{description}
-				</Text>
-				<Text style={{ fontSize: 20, marginTop: 10 }}>${price}</Text>
+				borderBottomWidth: 1,
+				borderBottomColor: "lightgrey",
+				marginHorizontal: 15,
+			}}
+			onPress={() =>
+				Navigator.navigate("Details", {
+					names: name,
+					prices: price,
+					images: image,
+					descriptions: description,
+				})
+			}>
+			<View
+				style={{
+					width: "100%",
+					paddingVertical: 10,
+					flexDirection: "row",
+					justifyContent: "space-between",
+				}}>
+				<Text style={{ fontSize: 22, fontWeight: "bold" }}>{name}</Text>
 			</View>
-			<View>
-				<Image
-					onError={() => setvalid(true)}
-					style={{
-						resizeMode: "contain",
-						height: 100,
-						width: 100,
-						paddingLeft: 10,
-						marginTop: -10,
-					}}
-					source={
-						valid
-							? require("../assets/Image_not_available.png")
-							: {
-									uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`,
-							  }
-					}
-				/>
+			<View
+				style={{
+					flexDirection: "row",
+					marginBottom: 10,
+					alignItems: "center",
+				}}>
+				<View style={{ flex: 1, marginRight: 10 }}>
+					<Text style={{ fontSize: 20 }} numberOfLines={2}>
+						{description}
+					</Text>
+					<Text style={{ fontSize: 20, marginTop: 10 }}>${price}</Text>
+				</View>
+				<View>
+					<Image
+						onError={() => setvalid(true)}
+						style={{
+							resizeMode: "cover",
+							height: 90,
+							width: 100,
+							paddingLeft: 10,
+							borderRadius: 8,
+						}}
+						source={
+							valid
+								? require("../assets/Image_not_available.png")
+								: {
+										uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`,
+								  }
+						}
+					/>
+				</View>
 			</View>
-		</View>
+		</Pressable>
 	);
 };
 
 const section = ["starters", "mains", "desserts", "drinks"];
 
-function Home() {
-	const [toggle, setToggle] = useState(false);
+function Home({ navigation }) {
 	const [Data, setData] = useState([]);
 	const [searchBarValue, setSearchBarValue] = useState("");
 	const [query, setQuery] = useState("");
 	const [filterSelections, setFilterSelections] = useState(
 		section.map(() => false)
 	);
+	const [ViewSuggection, setViewSuggestion] = useState(true);
+	const { headerRefresh, setheaderRefresh } = useContext(AuthContext);
 
-	const SearchHandler = () => {
-		setToggle(!toggle);
-	};
 	async function fetchData() {
 		try {
 			const response = await fetch(
 				"https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json"
 			);
 			const data = await response.json();
-
+			// console.log(data);
 			return data;
 		} catch (error) {
 			console.log("error", error.message);
 		}
 	}
 
+	console.log("sgag", fetchData());
 	useEffect(() => {
 		(async () => {
 			try {
+				setheaderRefresh(!headerRefresh);
 				await createTable();
 				const dataFromDatabase = await getMenuItems();
 
 				if (!dataFromDatabase.length) {
 					const data = DummyData;
+
 					await saveMenuItems(data);
 					const SectionListdata = getSectionListData(data.menu);
 					setData(SectionListdata);
@@ -143,11 +176,12 @@ function Home() {
 	const textChangeHandler = (text) => {
 		setSearchBarValue(text);
 		setQuery(text);
+		setViewSuggestion(true);
 	};
 
 	return (
 		<>
-			<Headerbar ScreenName={"Home"} />
+			<Headerbar ScreenName={"Home"} render={headerRefresh} />
 			<View style={{ flex: 1 }}>
 				<View
 					style={{
@@ -166,7 +200,7 @@ function Home() {
 					<View style={{ flexDirection: "row" }}>
 						<View
 							style={{
-								flex: 0.6,
+								flex: 0.5,
 							}}>
 							<Text
 								style={{
@@ -189,43 +223,42 @@ function Home() {
 							/>
 						</View>
 					</View>
-					<Pressable
-						onPress={SearchHandler}
-						style={
-							toggle
-								? {
-										flexDirection: "row",
-										alignItems: "center",
-										top: 10,
-										backgroundColor: "white",
-										borderRadius: 25,
-										height: 50,
-										width: "100%",
-										paddingLeft: 7,
-										marginBottom: 20,
-								  }
-								: {
-										flexDirection: "row",
-										alignItems: "center",
-										top: 10,
-										backgroundColor: "white",
-										borderRadius: 25,
-										height: 50,
-										width: 50,
-										paddingLeft: 7,
-										marginBottom: 20,
-								  }
-						}>
-						<Ionicons name='search' size={35}></Ionicons>
-						<TextInput
-							value={searchBarValue}
+					<View>
+						<View
 							style={{
-								fontSize: 20,
-								paddingLeft: 5,
-								width: !toggle ? 0 : "100%",
-							}}
-							onChangeText={textChangeHandler}></TextInput>
-					</Pressable>
+								flexDirection: "row",
+								alignItems: "center",
+								top: 10,
+								backgroundColor: "white",
+								borderRadius: 25,
+								height: 50,
+								paddingLeft: 7,
+								marginBottom: 20,
+								justifyContent: "space-evenly",
+							}}>
+							<Ionicons name='search' size={35}></Ionicons>
+							<TextInput
+								value={searchBarValue}
+								style={{
+									fontSize: 22,
+									paddingLeft: 5,
+									width: "75%",
+									height: 40,
+								}}
+								onChangeText={textChangeHandler}></TextInput>
+							{!searchBarValue == "" ? (
+								<Pressable
+									style={{ width: 50 }}
+									onPress={() => (
+										setQuery(""), setViewSuggestion(true), setSearchBarValue("")
+									)}>
+									<Text style={{ color: "red", fontSize: 18 }}>clear</Text>
+								</Pressable>
+							) : (
+								<View style={{ width: 50 }}></View>
+							)}
+						</View>
+					</View>
 				</View>
 				<View
 					style={{
@@ -234,6 +267,15 @@ function Home() {
 						borderBottomColor: "lightgrey",
 						borderBottomWidth: 1,
 					}}>
+					{searchBarValue && ViewSuggection ? (
+						<Suggestion
+							Data={Data}
+							setQuery={setQuery}
+							setSearchBarValue={setSearchBarValue}
+							setViewSuggestion={setViewSuggestion}
+						/>
+					) : null}
+
 					<Text
 						style={{
 							fontSize: 20,
@@ -254,27 +296,16 @@ function Home() {
 						</Text>
 					</View>
 				) : (
-					<SectionList
-						sections={Data}
-						keyExtractor={(item) => item.id}
-						renderItem={({ item }) => (
+					<FlatList
+						data={Data}
+						renderItem={({ item, index }) => (
 							<Item
-								name={item.name}
-								price={item.price}
-								image={item.image}
-								description={item.description}
+								id={index}
+								name={item.title}
+								price={item.data.map((i) => i.price)}
+								image={item.data.map((i) => i.image)}
+								description={item.data.map((i) => i.description)}
 							/>
-						)}
-						renderSectionHeader={({ section: { title } }) => (
-							<Text
-								style={{
-									fontSize: 25,
-									fontWeight: "700",
-									paddingHorizontal: 15,
-									marginTop: 10,
-								}}>
-								{title}
-							</Text>
 						)}
 					/>
 				)}

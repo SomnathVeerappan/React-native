@@ -1,26 +1,54 @@
+import { useContext, useEffect, useState } from "react";
 import React from "react";
-import { Text, View, TouchableOpacity, Image } from "react-native";
-import { Ionicons } from "react-native-vector-icons";
+import { View, Text, TouchableOpacity, Image, StatusBar } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "./AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "react-native-vector-icons";
 
-function Headerbar({ ScreenName }) {
+export function Headerbar({ ScreenName, render }) {
+	const height = StatusBar.currentHeight;
 	const Navigator = useNavigation();
+	const { key, setheaderRefresh, headerRefresh } = useContext(AuthContext);
 	const handlePress = () => {
+		ScreenName == "ProfileScreen" ? setheaderRefresh(!headerRefresh) : null;
 		Navigator.goBack();
 	};
+
 	const ProfilehandlePress = () => {
 		Navigator.navigate("Profile");
 	};
 
+	const [profile, setProfile] = useState({
+		firstName: "",
+		lastName: "",
+		email: "",
+		Image: "",
+	});
+
+	useEffect(() => {
+		try {
+			const data1 = async () => {
+				const data = await AsyncStorage.getItem(key);
+				data ? setProfile(JSON.parse(data)) : null;
+			};
+			data1();
+		} catch (e) {
+			console.log("fetch profile error", e);
+		}
+	}, [render]);
+
+	const firstLetter = profile.firstName ? profile.firstName[0] : "";
+	const lastletter = profile.lastName ? profile.lastName[0] : "";
 	return (
 		<View>
+			<View style={{ height: height }}></View>
 			<View
 				style={{
-					height: 80,
-					// backgroundColor: "red",
+					// height: "10%",
 					justifyContent: "space-around",
-					paddingTop: 25,
 					flexDirection: "row",
+					paddingBottom: 10,
 				}}>
 				{ScreenName == "Home" ? (
 					<View style={{ height: 50, width: 50 }}></View>
@@ -33,13 +61,29 @@ function Headerbar({ ScreenName }) {
 					source={require("../assets/Logo.png")}
 					style={{ height: 50, width: 190 }}></Image>
 				<TouchableOpacity onPress={ProfilehandlePress}>
-					<Image
-						source={require("../assets/Profile.png")}
-						style={{ height: 50, width: 50, borderRadius: 25 }}></Image>
+					{profile.Image ? (
+						<Image
+							source={{ uri: profile.Image }}
+							style={{ height: 50, width: 50, borderRadius: 25 }}></Image>
+					) : (
+						<View
+							style={{
+								height: 50,
+								width: 50,
+								borderRadius: 25,
+								alignItems: "center",
+								justifyContent: "center",
+								borderColor: "lightgrey",
+								borderWidth: 1,
+							}}>
+							<Text style={{ fontSize: 25, fontWeight: "bold" }}>
+								{firstLetter}
+								{lastletter}
+							</Text>
+						</View>
+					)}
 				</TouchableOpacity>
 			</View>
 		</View>
 	);
 }
-
-export default Headerbar;

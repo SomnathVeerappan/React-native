@@ -1,6 +1,6 @@
 import * as SQlite from "expo-sqlite";
 
-const DB = SQlite.openDatabase("example4");
+const DB = SQlite.openDatabase("example4773xbdfzbdzggasgwatw");
 
 export async function createTable() {
 	return new Promise((resolve, reject) => {
@@ -35,9 +35,6 @@ export async function getMenuItems() {
 }
 
 export async function saveMenuItems(menuItems) {
-	const InsertQuery = `INSERT INTO menuItems (name,  price, description, category, image) VALUES ( ${menuItems.menu.map(
-		(i) => "? "
-	)});`;
 	const InsertQuery1 = `INSERT INTO menuItems (name,  price, description, category, image) VALUES ( ?, ?, ?, ?, ? );`;
 	// console.log(InsertQuery);
 
