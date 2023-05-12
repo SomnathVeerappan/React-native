@@ -1,6 +1,6 @@
 import * as SQlite from "expo-sqlite";
 
-const DB = SQlite.openDatabase("example4773xbdfzbdzggasgwatw");
+const DB = SQlite.openDatabase("reactnative");
 
 export async function createTable() {
 	return new Promise((resolve, reject) => {

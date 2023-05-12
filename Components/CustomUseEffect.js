@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export default function updateUseEffect(effect, dep = []) {
 	let initialValue = useRef(true);

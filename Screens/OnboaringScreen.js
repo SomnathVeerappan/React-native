@@ -19,15 +19,17 @@ export default function Onboarding() {
 		try {
 			setIsLoading(true);
 			const fetchData = async () => {
-				const Login = await AsyncStorage.getItem("@IsLogin");
-
-				// const checkData = { key: "somnath@gmail.com", IsLogin: true };
-				const checkData = JSON.parse(Login);
-
-				console.log("CheckData", checkData);
-				checkData.IsLogin
-					? (setKey(checkData.key), setLogin(true), setIsLoading(false))
-					: setIsLoading(false);
+				try {
+					const Login = await AsyncStorage.getItem("@IsLogin");
+					// const checkData = { key: "somnath@gmail.com", IsLogin: true };
+					const checkData = JSON.parse(Login);
+					checkData
+						? // (console.log("CheckData", checkData);
+						  checkData.IsLogin
+							? (setKey(checkData.key), setLogin(true), setIsLoading(false))
+							: setIsLoading(false)
+						: setIsLoading(false);
+				} catch (error) {}
 			};
 
 			fetchData();
@@ -54,6 +56,16 @@ export default function Onboarding() {
 			<ImageBackground
 				source={require("../assets/OnboadingBackground.jpg")}
 				style={{ height: "100%", width: "100%", alignItems: "center" }}>
+				<View style={{ marginTop: "20%" }}>
+					<Text
+						style={{
+							color: "white",
+							fontSize: 26,
+							fontWeight: "800",
+						}}>
+						Welcome to Little Lemon App
+					</Text>
+				</View>
 				<View
 					style={{
 						flexDirection: "row",

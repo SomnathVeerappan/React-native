@@ -26,12 +26,11 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../Components/AuthContext";
 import { Suggestion } from "../Components/Suggestion";
 import { Headerbar } from "../Components/Header";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Item = ({ id, name, price, image, description }) => {
+const Item = ({ name, price, image, description }) => {
 	const [valid, setvalid] = useState(false);
 	const Navigator = useNavigation();
-	const [Card, setCard] = useState([]);
-	// console.log(Card);
 	return (
 		<Pressable
 			style={{
@@ -102,7 +101,14 @@ function Home({ navigation }) {
 		section.map(() => false)
 	);
 	const [ViewSuggection, setViewSuggestion] = useState(true);
-	const { headerRefresh, setheaderRefresh } = useContext(AuthContext);
+	const {
+		headerRefresh,
+		setheaderRefresh,
+		key,
+		setCard,
+		sethowMany,
+		setFlatListData,
+	} = useContext(AuthContext);
 
 	async function fetchData() {
 		try {
@@ -117,7 +123,7 @@ function Home({ navigation }) {
 		}
 	}
 
-	console.log("sgag", fetchData());
+	// console.log("sgag", fetchData());
 	useEffect(() => {
 		(async () => {
 			try {
@@ -127,16 +133,27 @@ function Home({ navigation }) {
 
 				if (!dataFromDatabase.length) {
 					const data = DummyData;
-
 					await saveMenuItems(data);
 					const SectionListdata = getSectionListData(data.menu);
 					setData(SectionListdata);
+					setFlatListData(SectionListdata);
+					// console.log(SectionListdata);
 				}
 
 				if (dataFromDatabase.length > 0) {
 					const SectionList = getSectionListData(dataFromDatabase);
 					setData(SectionList);
+					setFlatListData(SectionList);
+					// console.log(SectionList);
 				}
+
+				await AsyncStorage.getItem(key, (err, res) => {
+					const data = JSON.parse(res);
+					if (data) {
+						setCard(data.AddToCard);
+						sethowMany(data.Items == null ? 0 : data.Items);
+					}
+				});
 			} catch (error) {
 				Alert.alert(error);
 			}
@@ -252,7 +269,8 @@ function Home({ navigation }) {
 									onPress={() => (
 										setQuery(""), setViewSuggestion(true), setSearchBarValue("")
 									)}>
-									<Text style={{ color: "red", fontSize: 18 }}>clear</Text>
+									<Ionicons name='close-sharp' size={23}></Ionicons>
+									{/* <Text style={{ color: "red", fontSize: 18 }}>clear</Text> */}
 								</Pressable>
 							) : (
 								<View style={{ width: 50 }}></View>

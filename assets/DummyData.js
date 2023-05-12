@@ -40,14 +40,16 @@ export default Dummydata = {
 		{
 			name: "Coca Cola",
 			price: 3.99,
-			description: "Cool drinks.",
+			description:
+				"Coca-Cola is not just a drink; it's a symbol of happiness, togetherness, and pure enjoyment.",
 			image: "CocaCola.jpg",
 			category: "drinks",
 		},
 		{
 			name: "Water",
 			price: 2.99,
-			description: "Drink.",
+			description:
+				"Our water is a premium, high-quality beverage that delivers unparalleled purity and refreshment.",
 			image: "Water.jpg",
 			category: "drinks",
 		},

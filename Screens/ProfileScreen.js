@@ -36,10 +36,6 @@ function ProfileScreen() {
 	const onPressHandle = async () => {
 		try {
 			await AsyncStorage.setItem(
-				data.email,
-				JSON.stringify({ ...data, Token: "" })
-			);
-			await AsyncStorage.setItem(
 				"@IsLogin",
 				JSON.stringify({ IsLogin: false, key: "" })
 			);
@@ -55,8 +51,11 @@ function ProfileScreen() {
 		try {
 			const fetchData = async () => {
 				const response = await AsyncStorage.getItem(key);
-				setdata(JSON.parse(response));
-				console.log(JSON.parse(response));
+				const data = JSON.parse(response);
+				if (data) {
+					setdata(data);
+					// console.log(JSON.parse(response));
+				}
 			};
 			fetchData();
 		} catch (error) {
@@ -232,11 +231,7 @@ function ProfileScreen() {
 						Email
 					</Text>
 					<View style={style.DetailVeiwer}>
-						<TextInput
-							style={style.DetailVeiwerTextStyle}
-							value={data.email}
-							onChangeText={(t) => setdata({ ...data, email: t })}
-						/>
+						<Text style={style.DetailVeiwerTextStyle}>{data.email}</Text>
 					</View>
 					<Text style={{ fontSize: 20, fontWeight: "500" }}>
 						Email notifications

@@ -173,6 +173,17 @@ const SignUp = () => {
 							keyboardType='email-address'
 							value={data.email}
 							onChangeText={(t) => setData({ ...data, email: t })}></TextInput>
+						<Text
+							onPress={() => Navigator.navigate("Login")}
+							style={{
+								// height: 5,
+								padding: 10,
+								fontSize: 16,
+								fontWeight: "500",
+								textDecorationLine: "underline",
+							}}>
+							Do you already have an account ? Click this.
+						</Text>
 						{isEmailValid && isValid ? (
 							<Text style={{ color: "red" }}>Email Not Valid</Text>
 						) : null}

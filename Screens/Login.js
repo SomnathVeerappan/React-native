@@ -29,7 +29,6 @@ const Login = () => {
 		passwordChange: true,
 		specialOffers: true,
 		newsLetter: true,
-		Token: "",
 		Image: "",
 	});
 
@@ -74,7 +73,7 @@ const Login = () => {
 	};
 
 	return (
-		<>
+		<ScrollView style={{ flex: 1 }}>
 			<View
 				style={{
 					height: 100,
@@ -88,83 +87,81 @@ const Login = () => {
 					style={{ height: 50, width: 190, marginBottom: 10 }}></Image>
 			</View>
 
-			<ScrollView>
-				<View
-					style={{
-						backgroundColor: "#cecedb",
-						height: "85%",
-					}}>
-					<View>
-						<View
-							style={{
-								alignItems: "center",
-								marginVertical: "15%",
-							}}>
-							<Text
-								style={{ fontSize: 26, fontWeight: "400", color: "#333333" }}>
-								Let us get to know you
-							</Text>
-						</View>
-					</View>
+			{/* <View style={{ flex: 1, backgroundColor: "black" }}> */}
+			<View
+				style={{
+					backgroundColor: "#cecedb",
+					height: "65%",
+				}}>
+				<View>
 					<View
 						style={{
 							alignItems: "center",
-							// height: 280,
-							marginTop: "10%",
-							marginBottom: "20%",
+							marginVertical: "15%",
 						}}>
-						<View style={{ justifyContent: "center" }}>
-							<Text
-								style={{ fontSize: 26, fontWeight: "400", color: "#333333" }}>
-								Email
-							</Text>
-						</View>
-
-						<TextInput
-							style={{
-								borderWidth: 2,
-								width: "70%",
-								borderRadius: 10,
-								height: 60,
-								borderColor: "#333333",
-								marginVertical: 20,
-								fontSize: 22,
-								paddingHorizontal: 10,
-							}}
-							value={data.email}
-							keyboardType='email-address'
-							onChangeText={(t) => setData({ ...data, email: t })}></TextInput>
-						{isEmailValid && isValid ? (
-							<Text style={{ color: "red" }}>Email Not Valid</Text>
-						) : null}
-						{isEmailMatch ? (
-							<Text style={{ color: "red" }}>Email does Not Match</Text>
-						) : null}
+						<Text style={{ fontSize: 26, fontWeight: "400", color: "#333333" }}>
+							Let us get to know you
+						</Text>
 					</View>
 				</View>
 				<View
 					style={{
-						height: "20%",
-						justifyContent: "center",
-						alignItems: "flex-end",
-						paddingRight: "10%",
-						backgroundColor: null,
+						alignItems: "center",
+						// height: 280,
+						marginTop: "10%",
+						marginBottom: "20%",
 					}}>
-					<TouchableOpacity
+					<View style={{ justifyContent: "center" }}>
+						<Text style={{ fontSize: 26, fontWeight: "400", color: "#333333" }}>
+							Email
+						</Text>
+					</View>
+
+					<TextInput
 						style={{
-							height: 50,
-							width: 120,
-							backgroundColor: "#cecedb",
+							borderWidth: 2,
+							width: "70%",
 							borderRadius: 10,
-							alignItems: "center",
-							justifyContent: "center",
+							height: 60,
+							borderColor: "#333333",
+							marginVertical: 20,
+							fontSize: 22,
+							paddingHorizontal: 10,
 						}}
-						onPress={onPressHandle}>
-						<Text style={{ fontSize: 24 }}>Next</Text>
-					</TouchableOpacity>
+						value={data.email}
+						keyboardType='email-address'
+						onChangeText={(t) => setData({ ...data, email: t })}></TextInput>
+					{isEmailValid && isValid ? (
+						<Text style={{ color: "red" }}>Email Not Valid</Text>
+					) : null}
+					{isEmailMatch ? (
+						<Text style={{ color: "red" }}>Email does Not Match</Text>
+					) : null}
 				</View>
-			</ScrollView>
-		</>
+			</View>
+			<View
+				style={{
+					height: "15%",
+					justifyContent: "center",
+					paddingRight: "10%",
+				}}>
+				<TouchableOpacity
+					style={{
+						height: 50,
+						width: 120,
+						backgroundColor: "#cecedb",
+						borderRadius: 10,
+						alignItems: "center",
+						justifyContent: "center",
+						alignSelf: "flex-end",
+					}}
+					onPress={onPressHandle}>
+					<Text style={{ fontSize: 24 }}>Next</Text>
+				</TouchableOpacity>
+			</View>
+
+			{/* </View> */}
+		</ScrollView>
 	);
 };
 

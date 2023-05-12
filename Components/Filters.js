@@ -1,5 +1,11 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+	Text,
+	View,
+	StyleSheet,
+	TouchableOpacity,
+	ScrollView,
+} from "react-native";
 
 export function Filter({ onChange, section, selections }) {
 	return (
@@ -15,11 +21,12 @@ export function Filter({ onChange, section, selections }) {
 						paddingHorizontal: 5,
 						paddingVertical: 10,
 						borderWidth: 1,
-						borderColor: "white",
+						borderColor: "#dee3e0",
 						backgroundColor: selections[index] ? "#EE9972" : "#dee3e0",
 						borderRadius: 20,
 						justifyContent: "center",
 						alignItems: "center",
+						marginHorizontal: 2,
 					}}>
 					<View>
 						<Text

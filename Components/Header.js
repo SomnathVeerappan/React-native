@@ -9,7 +9,8 @@ import { Ionicons } from "react-native-vector-icons";
 export function Headerbar({ ScreenName, render }) {
 	const height = StatusBar.currentHeight;
 	const Navigator = useNavigation();
-	const { key, setheaderRefresh, headerRefresh } = useContext(AuthContext);
+	const { key, setheaderRefresh, headerRefresh, howMany } =
+		useContext(AuthContext);
 	const handlePress = () => {
 		ScreenName == "ProfileScreen" ? setheaderRefresh(!headerRefresh) : null;
 		Navigator.goBack();
@@ -45,14 +46,33 @@ export function Headerbar({ ScreenName, render }) {
 			<View style={{ height: height }}></View>
 			<View
 				style={{
-					// height: "10%",
 					justifyContent: "space-around",
 					flexDirection: "row",
 					paddingBottom: 10,
+					alignItems: "center",
 				}}>
 				{ScreenName == "Home" ? (
-					<View style={{ height: 50, width: 50 }}></View>
-				) : (
+					<TouchableOpacity
+						style={{ paddingTop: 5 }}
+						onPress={() => Navigator.navigate("AddCard")}>
+						{howMany ? (
+							<Text
+								style={{
+									position: "absolute",
+									backgroundColor: "black",
+									color: "white",
+									height: 20,
+									width: 20,
+									borderRadius: 10,
+									textAlign: "center",
+								}}>
+								{howMany}
+							</Text>
+						) : null}
+						<Ionicons size={40} name='basket-outline'></Ionicons>
+					</TouchableOpacity>
+				) : null}
+				{ScreenName == "Home" ? null : (
 					<TouchableOpacity onPress={handlePress}>
 						<Ionicons size={50} name='arrow-back-circle'></Ionicons>
 					</TouchableOpacity>
@@ -60,29 +80,50 @@ export function Headerbar({ ScreenName, render }) {
 				<Image
 					source={require("../assets/Logo.png")}
 					style={{ height: 50, width: 190 }}></Image>
-				<TouchableOpacity onPress={ProfilehandlePress}>
-					{profile.Image ? (
-						<Image
-							source={{ uri: profile.Image }}
-							style={{ height: 50, width: 50, borderRadius: 25 }}></Image>
-					) : (
-						<View
-							style={{
-								height: 50,
-								width: 50,
-								borderRadius: 25,
-								alignItems: "center",
-								justifyContent: "center",
-								borderColor: "lightgrey",
-								borderWidth: 1,
-							}}>
-							<Text style={{ fontSize: 25, fontWeight: "bold" }}>
-								{firstLetter}
-								{lastletter}
+
+				{ScreenName == "Details" ? (
+					<TouchableOpacity onPress={() => Navigator.navigate("AddCard")}>
+						{howMany ? (
+							<Text
+								style={{
+									position: "absolute",
+									backgroundColor: "black",
+									color: "white",
+									height: 20,
+									width: 20,
+									borderRadius: 10,
+									textAlign: "center",
+								}}>
+								{howMany}
 							</Text>
-						</View>
-					)}
-				</TouchableOpacity>
+						) : null}
+						<Ionicons size={40} name='basket-outline'></Ionicons>
+					</TouchableOpacity>
+				) : (
+					<TouchableOpacity onPress={ProfilehandlePress}>
+						{profile.Image ? (
+							<Image
+								source={{ uri: profile.Image }}
+								style={{ height: 50, width: 50, borderRadius: 25 }}></Image>
+						) : (
+							<View
+								style={{
+									height: 50,
+									width: 50,
+									borderRadius: 25,
+									alignItems: "center",
+									justifyContent: "center",
+									borderColor: "lightgrey",
+									borderWidth: 1,
+								}}>
+								<Text style={{ fontSize: 25, fontWeight: "bold" }}>
+									{firstLetter}
+									{lastletter}
+								</Text>
+							</View>
+						)}
+					</TouchableOpacity>
+				)}
 			</View>
 		</View>
 	);
